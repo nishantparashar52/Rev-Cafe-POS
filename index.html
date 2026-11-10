@@ -11,9 +11,9 @@
 <link rel="stylesheet" href="styles.css">
 </head><body>
 <header><b>REV CAFE</b><nav>
-<button data-tab="bill">Billing</button><button data-tab="manage">Manage</button><button data-tab="settings">Settings</button></nav></header>
+<button data-tab="bill">Bill</button><button data-tab="dash">Dashboard</button><button data-tab="inventory">Inventory</button><button data-tab="manage">Manage</button><button data-tab="settings">Settings</button></nav></header>
 <main id="view"></main>
-<footer class="bar" id="bar"><div>Total <b id="gt">₹0</b></div><button id="print" class="primary">PRINT 2 COPIES</button></footer>
+<footer class="bar" id="bar"><div>Total <b id="gt">₹0</b></div><button id="order" class="primary">Place Order</button></footer>
 <dialog id="dlg"><form id="pf" method="dialog">
 <h3 id="dt">Product</h3>
 <label>Name *<input name="name" required maxlength="80"></label>
@@ -23,6 +23,16 @@
 <label class="chk"><input type="checkbox" name="active"> Active</label>
 <p id="err" class="np"></p>
 <div class="acts"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save</button></div>
+</form></dialog>
+<dialog id="od"><h3>Payment received by</h3><p id="odt"></p><div class="od-grid"><button class="primary" data-act="pay" data-m="cash" data-print="1">🖨 Cash + Print</button><button class="primary" data-act="pay" data-m="online" data-print="1">🖨 Online + Print</button><button data-act="pay" data-m="cash">Cash only</button><button data-act="pay" data-m="online">Online only</button></div><button id="ocancel" style="margin-top:10px;width:100%">Cancel</button></dialog>
+<dialog id="matdlg"><form id="mf-form">
+<h3 id="mf-title">Add Material</h3>
+<label>Name *<input id="mf-name" required maxlength="80" placeholder="e.g. Mozzarella"></label>
+<label>Unit (optional)<input id="mf-unit" maxlength="20" placeholder="e.g. kg, pcs, litres"></label>
+<label>Category (optional)<input id="mf-cat" list="mf-catlist" maxlength="40" placeholder="e.g. Dairy, Vegetables"><datalist id="mf-catlist"></datalist></label>
+<label>Alert threshold (optional)<input id="mf-thr" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 2 — alerts when stock ≤ this"></label>
+<p id="mf-err" class="np"></p>
+<div class="acts"><button type="button" id="mf-cancel">Cancel</button><button class="primary" type="submit">Save</button></div>
 </form></dialog>
 <div id="receipt"></div>
 <script type="module" src="app.js"></script>

@@ -31,3 +31,8 @@ Uses the iOS print dialog (`window.print`), formatted as two 58mm slips in one j
 - [ ] Print 2 COPIES produces two identical slips from one tap; cancelling keeps the bill
 - [ ] Catalogue survives closing and reopening; export and import round-trip
 - [ ] Evercom printer result recorded here: ______
+
+## Orders and dashboard
+Bill tab: Place Order asks for Cash or Online, saves the order to IndexedDB (it survives closing the app), and clears the bill. Online is only a label; no payment gateway is involved.
+Dashboard tab: today or all-time sales, cash vs online totals, items sold, sales by category, and an order list where you can switch an order's payment method or delete it. "Today" means since midnight on the device clock.
+Extra checks: place cash and online orders and confirm the dashboard totals; reload and confirm they persist; place an order in airplane mode.
