@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>REV CAFE POS</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="REV CAFE">
+<meta name="theme-color" content="#3b2417">
+<link rel="stylesheet" href="styles.css">
+</head><body>
+<header><b>REV CAFE</b><nav>
+<button data-tab="bill">Billing</button><button data-tab="manage">Manage</button><button data-tab="settings">Settings</button></nav></header>
+<main id="view"></main>
+<footer class="bar" id="bar"><div>Total <b id="gt">₹0</b></div><button id="print" class="primary">PRINT 2 COPIES</button></footer>
+<dialog id="dlg"><form id="pf" method="dialog">
+<h3 id="dt">Product</h3>
+<label>Name *<input name="name" required maxlength="80"></label>
+<label>Selling price (₹, leave empty if not set)<input name="price" inputmode="decimal"></label>
+<label>Product code (optional)<input name="code" maxlength="30"></label>
+<label>Category (optional)<input name="category" list="cl" maxlength="40"><datalist id="cl"></datalist></label>
+<label class="chk"><input type="checkbox" name="active"> Active</label>
+<p id="err" class="np"></p>
+<div class="acts"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save</button></div>
+</form></dialog>
+<div id="receipt"></div>
+<script type="module" src="app.js"></script>
+</body></html>
