@@ -4,6 +4,7 @@ import { buildReceipt, esc } from './receipt.js';
 import { summarize } from './stats.js';
 import { printHtml } from './printing.js';
 import { getTodayInventory, bulkSetOpening, bulkSetClosing, setThreshold, parseMaterialsCSV, parseMaterialsJSON } from './inventory.js';
+import * as sheets from './sheets.js';
 
 const BIZ = { name: 'REV CAFE', address: 'B 557, Ground Floor, Rajiv Nagar, Mandoli, Delhi – 93', version: '1.0.0' };
 const $ = s => document.querySelector(s);
@@ -138,6 +139,17 @@ function saveInvStock() {
   else if (stockMode === 'evening') bulkSetClosing(entries);
   else entries.forEach(({ id, qty }) => setThreshold(id, qty));
   renderInventory();
+  // Push updated inventory to Sheets (fire-and-forget)
+  const sheetEntries = entries.map(({ id, qty }) => {
+    const m = materials.find(x => x.id === id);
+    if (!m) return null;
+    const NS = 'revcafe.inv.';
+    const today = new Date().toISOString().slice(0, 10);
+    const stock = (() => { try { return JSON.parse(localStorage.getItem(`${NS}stock.${today}.${id}`)) ?? {}; } catch { return {}; } })();
+    const thr = (() => { try { return JSON.parse(localStorage.getItem(`${NS}threshold.${id}`)); } catch { return null; } })();
+    return { materialId: m.id, materialName: m.name, unit: m.unit || '', category: m.category || '', open: stock.open ?? null, close: stock.close ?? null, threshold: thr };
+  }).filter(Boolean);
+  sheets.pushInventory(sheetEntries);
 }
 
 function renderInvMaterials() {
@@ -226,9 +238,13 @@ function renderInvUpload() {
 }
 
 function renderSettings() {
+  const syncStatus = sheets.isOnline()
+    ? '<span style="color:#2e7d32">✓ Connected</span>'
+    : '<span style="color:#e65100">⚠ Offline / Not configured</span>';
   $('#view').innerHTML = `<div class="set"><h2>${BIZ.name}</h2><p>${BIZ.address}</p><p class="muted">Version ${BIZ.version}</p></div>
   <div class="set"><h2>Printer</h2><p class="muted">Prints a test slip through the iOS print dialog.</p><button data-act="ptest">Print test slip</button></div>
-  <div class="set"><h2>Backup</h2><div class="acts"><button data-act="export">Export catalogue</button><button data-act="import">Import catalogue</button></div><input id="file" type="file" accept="application/json" hidden></div>`;
+  <div class="set"><h2>Backup</h2><div class="acts"><button data-act="export">Export catalogue</button><button data-act="import">Import catalogue</button></div><input id="file" type="file" accept="application/json" hidden></div>
+  <div class="set"><h2>Google Sheets Sync</h2><p class="muted">Status: ${syncStatus}</p><p class="muted">Use this once to migrate existing local data (products, orders, today's inventory) up to Google Sheets.</p><button data-act="pushLocal">⬆ Push local data to Sheets</button></div>`;
 }
 function openForm(p) {
   editingId = p?.id ?? null;
@@ -244,7 +260,7 @@ $('#pf').addEventListener('submit', async e => {
   if (!pp.ok) return $('#err').textContent = pp.error;
   const rec = { name, price: pp.value, code: f.code.value.trim(), category: f.category.value.trim(), active: f.active.checked };
   if (editingId != null) rec.id = editingId;
-  try { await db.save(rec); await reload(); $('#dlg').close(); show(tab); } catch { $('#err').textContent = 'Could not save. Please try again.'; }
+  try { await db.save(rec); await reload(); sheets.pushProducts(products); $('#dlg').close(); show(tab); } catch { $('#err').textContent = 'Could not save. Please try again.'; }
 });
 $('#cancel').onclick = () => $('#dlg').close();
 
@@ -268,8 +284,10 @@ async function renderDash() {
 async function placeOrder(method, shouldPrint) {
   if (!cart.length) return;
   const lines = cart.map(l => ({ ...l }));
-  try { await db.saveOrder({ at: Date.now(), method, lines, total: grandTotal(lines) }); }
+  let savedOrder;
+  try { savedOrder = { at: Date.now(), method, lines, total: grandTotal(lines) }; await db.saveOrder(savedOrder); }
   catch { alert('Could not save the order. The bill is still open.'); return; }
+  sheets.pushOrder(savedOrder);
   $('#od').close(); cart = []; updateCart();
   if (shouldPrint) {
     const no = load('rno', 0) + 1; store('rno', no);
@@ -304,8 +322,15 @@ document.addEventListener('click', async e => {
   else if (a === 'invTplJSON') { const tpl = [{ name: 'Potato', unit: 'kg', category: 'Vegetables', threshold: 2 }, { name: 'Tomato', unit: 'kg', category: 'Vegetables', threshold: 1 }, { name: 'Mozzarella', unit: 'kg', category: 'Dairy', threshold: 1 }]; const url = URL.createObjectURL(new Blob([JSON.stringify(tpl, null, 2)], { type: 'application/json' })); Object.assign(document.createElement('a'), { href: url, download: 'materials-template.json' }).click(); URL.revokeObjectURL(url); }
   else if (a === 'new') openForm();
   else if (a === 'edit') openForm(byId(id));
-  else if (a === 'tog') { const p = byId(id); await db.save({ ...p, active: p.active === false }); await reload(); renderManage(); }
-  else if (a === 'delp') { const p = byId(id); if (confirm(`Delete "${p.name}"? This cannot be undone.`)) { await db.remove(id); await reload(); renderManage(); } }
+  else if (a === 'tog') { const p = byId(id); await db.save({ ...p, active: p.active === false }); await reload(); sheets.pushProducts(products); renderManage(); }
+  else if (a === 'delp') { const p = byId(id); if (confirm(`Delete "${p.name}"? This cannot be undone.`)) { await db.remove(id); await reload(); sheets.pushProducts(products); renderManage(); } }
+  else if (a === 'pushLocal') {
+    const btn = t; btn.disabled = true; btn.textContent = 'Pushing…';
+    const allOrders = await db.getOrders();
+    const ok = await sheets.pushLocalToSheets(products, allOrders, materials);
+    btn.disabled = false; btn.textContent = '⬆ Push local data to Sheets';
+    alert(ok ? '✓ All local data pushed to Google Sheets.' : '✗ Push failed. Check that SHEETS_URL is set in sheets.js and the Web App is deployed.');
+  }
   else if (a === 'ptest') printHtml(buildReceipt([{ name: 'Test item', price: 10, qty: 1 }], { ...BIZ, date: new Date(), no: 0 }));
   else if (a === 'export') { const url = URL.createObjectURL(new Blob([JSON.stringify(products, null, 2)], { type: 'application/json' })); Object.assign(document.createElement('a'), { href: url, download: 'revcafe-catalogue.json' }).click(); URL.revokeObjectURL(url); }
   else if (a === 'import') $('#file').click();
@@ -346,8 +371,8 @@ document.addEventListener('change', async e => {
   try {
     const list = JSON.parse(await e.target.files[0].text());
     if (!Array.isArray(list) || list.some(p => typeof p.name !== 'string' || !p.name.trim() || (p.price != null && !parsePrice(p.price).ok))) throw 0;
-    if (confirm(`Replace the catalogue with ${list.length} products from this file?`)) { await db.replaceAll(list); await reload(); alert('Catalogue restored.'); }
+    if (confirm(`Replace the catalogue with ${list.length} products from this file?`)) { await db.replaceAll(list); await reload(); sheets.pushProducts(products); alert('Catalogue restored.'); }
   } catch { alert('This file is not a valid catalogue backup.'); }
   e.target.value = '';
 });
-(async () => { await reload(); show('bill'); if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); })();
+(async () => { await sheets.syncDown(); await reload(); show('bill'); if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); })();
