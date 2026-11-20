@@ -65,17 +65,24 @@ function _updateStatusBadge(online) {
  *   does not handle. Using GET with a URL-encoded payload is a simple request (no preflight,
  *   no redirect body loss) and is the standard workaround for Apps Script from browsers.
  */
+/** fetch() with a hard 5-second timeout so a hanging request never blocks app startup. */
+function fetchWithTimeout(url, ms = 5000) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(id));
+}
+
 async function post(payload) {
   if (!SHEETS_URL || SHEETS_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return null;
   const url = `${SHEETS_URL}?payload=${encodeURIComponent(JSON.stringify(payload))}`;
-  const res = await fetch(url);
+  const res = await fetchWithTimeout(url);
   return res.json();
 }
 
 /** GET a resource (products|orders|inventory) from the Apps Script endpoint. */
 async function get(resource) {
   if (!SHEETS_URL || SHEETS_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return null;
-  const res = await fetch(`${SHEETS_URL}?resource=${resource}`);
+  const res = await fetchWithTimeout(`${SHEETS_URL}?resource=${resource}`);
   return res.json();
 }
 

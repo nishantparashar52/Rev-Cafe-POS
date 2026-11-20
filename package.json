@@ -1,0 +1,26 @@
+{
+  "name": "rev-cafe-pos",
+  "version": "1.0.0",
+  "description": "Static app, no build step, no backend. Plain HTML/CSS/ES modules, IndexedDB for the catalogue. Modules: `pricing.js` (calculations), `db.js` (storage), `receipt.js`, `printing.js` (swap for a native bridge later), `app.js` (UI), `sw.js` (offline cache).",
+  "main": "app.js",
+  "scripts": {
+    "sync": "cp index.html app.js db.js inventory.js pricing.js printing.js receipt.js sheets.js stats.js styles.css sw.js manifest.webmanifest www/ && cp -r icons www/ && npx cap sync",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-personal:nishantparashar52/Rev-Cafe-POS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ascentio-it/capacitor-bluetooth-serial": "^8.0.1",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/ios": "^8.6.2"
+  }
+}

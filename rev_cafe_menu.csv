@@ -1,0 +1,125 @@
+﻿Name,Selling Price,Product Code,Category
+Dal Tadka Half,70,1,Main Course
+Dal Tadka,120,2,Main Course
+Dal Handi Half,90,3,Main Course
+Dal Handi,150,4,Main Course
+Dal Makhni Half,100,5,Main Course
+Dal Makhni,170,6,Main Course
+Mix Veg Half,100,7,Main Course
+Mix Veg,170,8,Main Course
+Shahi Paneer Half,110,9,Main Course
+Shahi Paneer,180,10,Main Course
+Matar Paneer Half,110,11,Main Course
+Matar Paneer,180,12,Main Course
+Paneer Lababdar Half,120,13,Main Course
+Paneer Lababdar,200,14,Main Course
+Kadhai Chaap Half,110,15,Main Course
+Kadhai Chaap,180,16,Main Course
+Kadhai Paneer Half,130,17,Main Course
+Kadhai Paneer,210,18,Main Course
+Paneer Do Pyaza Half,130,19,Main Course
+Paneer Do Pyaza,220,20,Main Course
+Paneer Butter Masala Half,130,21,Main Course
+Paneer Butter Masala,220,22,Main Course
+Paneer Bhurji Half,150,23,Main Course
+Paneer Bhurji,230,24,Main Course
+Plain Rice Half,49,25,Rice
+Plain Rice,99,26,Rice
+Jeera Rice Half,59,27,Rice
+Jeera Rice,109,28,Rice
+Matar Pulao,100,29,Rice
+Veg Biryani,100,30,Rice
+Plain Raita Half,50,31,Raita & Papad
+Plain Raita,90,32,Raita & Papad
+Boondi Raita Half,60,33,Raita & Papad
+Boondi Raita,100,34,Raita & Papad
+Mix Veg Raita Half,70,35,Raita & Papad
+Mix Veg Raita,110,36,Raita & Papad
+Masala Papad,20,37,Raita & Papad
+Tawa Roti,10,38,Breads
+Rumali Roti,10,39,Breads
+Tandoori Roti,10,40,Breads
+Butter Naan,35,41,Breads
+Paper Dosa,80,42,South Indian
+Masala Dosa,100,43,South Indian
+Onion Dosa,110,44,South Indian
+Paneer Dosa,120,45,South Indian
+Cheese Dosa,140,46,South Indian
+Spring Roll Dosa,150,47,South Indian
+Plain Uttapam,80,48,South Indian
+Veg Uttapam,100,49,South Indian
+Tomato Pizza Half,100,50,Pizza
+Tomato Pizza,160,51,Pizza
+Onion Pizza Half,100,52,Pizza
+Onion Pizza,160,53,Pizza
+Corn Pizza Half,100,54,Pizza
+Corn Pizza,160,55,Pizza
+Capsicum Pizza Half,100,56,Pizza
+Capsicum Pizza,160,57,Pizza
+Farmhouse Pizza Half,110,58,Pizza
+Farmhouse Pizza,170,59,Pizza
+Cheese Pizza Half,120,60,Pizza
+Cheese Pizza,180,61,Pizza
+Red Sauce Pasta Half,90,62,Italian Pasta
+Red Sauce Pasta,170,63,Italian Pasta
+White Sauce Pasta Half,100,64,Italian Pasta
+White Sauce Pasta,180,65,Italian Pasta
+Mix Sauce Pasta Half,100,66,Italian Pasta
+Mix Sauce Pasta,180,67,Italian Pasta
+Aloo Parantha,50,68,Parantha
+Onion Parantha,50,69,Parantha
+Gobi Parantha,50,70,Parantha
+Paneer Parantha,60,71,Parantha
+Mix Parantha,60,72,Parantha
+Veg Noodles,80,73,Chinese
+Hakka Noodles,110,74,Chinese
+Singapuri Noodles,110,75,Chinese
+Paneer Noodles,150,76,Chinese
+Chilly Garlic Noodles,100,77,Chinese
+Chilly Potato,110,78,Chinese
+Honey Chilly Potato,120,79,Chinese
+Chilly Paneer,150,80,Chinese
+French Fries,80,81,Chinese
+Peri Peri Fries,100,82,Chinese
+Spring Rolls,70,83,Chinese
+Veg Manchurian (Gravy),130,84,Chinese
+Chilly Manchurian (Paneer),150,85,Chinese
+Fried Rice,100,86,Chinese
+Paneer Fried Rice,150,87,Chinese
+Malai Chaap Half,110,88,Chaap
+Malai Chaap,180,89,Chaap
+Masala Chaap Half,110,90,Chaap
+Masala Chaap,180,91,Chaap
+Afghani Chaap Half,120,92,Chaap
+Afghani Chaap,200,93,Chaap
+Achari Chaap Half,120,94,Chaap
+Achari Chaap,200,95,Chaap
+Veg Momos (Fry),60,96,Momos
+Veg Momos (Steam),70,97,Momos
+Veg Momos (Gravy),100,98,Momos
+Paneer Momos,110,99,Momos
+Kurkure Momos Half,100,100,Momos
+Kurkure Momos,150,101,Momos
+Tandoori Momos Half,100,102,Momos
+Tandoori Momos,150,103,Momos
+Paneer Tikka Half,120,104,Tikka
+Paneer Tikka,200,105,Tikka
+Malai Paneer Tikka Half,130,106,Tikka
+Malai Paneer Tikka,210,107,Tikka
+Chocolate Shake,80,108,Drinks
+Strawberry Shake,80,109,Drinks
+Kitkat Shake,90,110,Drinks
+Oreo Shake,90,111,Drinks
+Vanilla Shake,90,112,Drinks
+Butterscotch Shake,90,113,Drinks
+Mint Mojito,60,114,Drinks
+Aam Panna,60,115,Drinks
+Blue Berry,60,116,Drinks
+Kala Khatta,60,117,Drinks
+Cold Drinks Glass,20,118,Drinks
+Coffee,50,119,Coffee
+Hot Coffee with Butter,60,120,Coffee
+Cold Coffee,70,121,Coffee
+Veg Burger,40,122,Burger
+Cheese Burger,50,123,Burger
+Cheese Paneer Burger,60,124,Burger

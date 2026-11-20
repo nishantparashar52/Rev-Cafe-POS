@@ -1,0 +1,16 @@
+{
+  "appId": "com.revcafe.pos",
+  "appName": "REV CAFE POS",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "BluetoothLe": {
+      "displayStrings": {
+        "scanning": "Scanning for printer…",
+        "cancel": "Cancel",
+        "availableDevices": "Available Printers",
+        "noDeviceFound": "No printer found. Make sure the printer is on."
+      }
+    }
+  }
+}

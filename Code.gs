@@ -22,8 +22,16 @@ var INVENTORY_HEADERS = ['date', 'materialId', 'materialName', 'unit', 'category
 
 function doGet(e) {
   try {
-    var resource = (e.parameter.resource || '').toLowerCase();
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // Write path: browser sends payload as a URL-encoded query param to avoid CORS preflight.
+    if (e.parameter.payload) {
+      var payload = JSON.parse(e.parameter.payload);
+      return handleWrite(ss, payload);
+    }
+
+    // Read path: ?resource=products|orders|inventory
+    var resource = (e.parameter.resource || '').toLowerCase();
     var sheetName = capitalize(resource);
     var sheet = ss.getSheetByName(sheetName);
     if (!sheet) return errorResponse('Unknown resource: ' + resource);
@@ -37,42 +45,48 @@ function doGet(e) {
 function doPost(e) {
   try {
     var payload = JSON.parse(e.postData.contents);
-    var action = payload.action;
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-
-    if (action === 'sync_products') {
-      var sheet = getOrCreateSheet(ss, 'Products', PRODUCTS_HEADERS);
-      syncProducts(sheet, payload.products);
-      return jsonResponse({ ok: true });
-    }
-
-    if (action === 'save_order') {
-      var sheet = getOrCreateSheet(ss, 'Orders', ORDERS_HEADERS);
-      appendOrder(sheet, payload.order);
-      return jsonResponse({ ok: true });
-    }
-
-    if (action === 'save_inventory') {
-      var sheet = getOrCreateSheet(ss, 'Inventory', INVENTORY_HEADERS);
-      upsertInventory(sheet, payload.entries);
-      return jsonResponse({ ok: true });
-    }
-
-    if (action === 'push_local') {
-      // One-time migration: push all local data to Sheets
-      var pSheet = getOrCreateSheet(ss, 'Products', PRODUCTS_HEADERS);
-      var oSheet = getOrCreateSheet(ss, 'Orders', ORDERS_HEADERS);
-      var iSheet = getOrCreateSheet(ss, 'Inventory', INVENTORY_HEADERS);
-      syncProducts(pSheet, payload.products || []);
-      (payload.orders || []).forEach(function(o) { appendOrder(oSheet, o); });
-      upsertInventory(iSheet, payload.inventory || []);
-      return jsonResponse({ ok: true });
-    }
-
-    return errorResponse('Unknown action: ' + action);
+    return handleWrite(SpreadsheetApp.getActiveSpreadsheet(), payload);
   } catch (err) {
     return errorResponse(err.toString());
   }
+}
+
+/**
+ * Shared write dispatcher — called by both doGet (payload param) and doPost.
+ */
+function handleWrite(ss, payload) {
+  var action = payload.action;
+
+  if (action === 'sync_products') {
+    var sheet = getOrCreateSheet(ss, 'Products', PRODUCTS_HEADERS);
+    syncProducts(sheet, payload.products);
+    return jsonResponse({ ok: true });
+  }
+
+  if (action === 'save_order') {
+    var sheet = getOrCreateSheet(ss, 'Orders', ORDERS_HEADERS);
+    appendOrder(sheet, payload.order);
+    return jsonResponse({ ok: true });
+  }
+
+  if (action === 'save_inventory') {
+    var sheet = getOrCreateSheet(ss, 'Inventory', INVENTORY_HEADERS);
+    upsertInventory(sheet, payload.entries);
+    return jsonResponse({ ok: true });
+  }
+
+  if (action === 'push_local') {
+    // One-time migration: push all local data to Sheets
+    var pSheet = getOrCreateSheet(ss, 'Products', PRODUCTS_HEADERS);
+    var oSheet = getOrCreateSheet(ss, 'Orders', ORDERS_HEADERS);
+    var iSheet = getOrCreateSheet(ss, 'Inventory', INVENTORY_HEADERS);
+    syncProducts(pSheet, payload.products || []);
+    (payload.orders || []).forEach(function(o) { appendOrder(oSheet, o); });
+    upsertInventory(iSheet, payload.inventory || []);
+    return jsonResponse({ ok: true });
+  }
+
+  return errorResponse('Unknown action: ' + action);
 }
 
 // ── Products ─────────────────────────────────────────────────────────────────

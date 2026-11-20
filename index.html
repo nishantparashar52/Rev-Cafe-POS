@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>REV CAFE POS</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -11,7 +11,9 @@
 <link rel="stylesheet" href="styles.css">
 </head><body>
 <header><b>REV CAFE</b><nav>
-<button data-tab="bill">Bill</button><button data-tab="dash">Dashboard</button><button data-tab="inventory">Inventory</button><button data-tab="manage">Manage</button><button data-tab="settings">Settings</button></nav></header>
+<button data-tab="bill">Bill</button><button data-tab="dash">Dashboard</button>
+<div class="more-wrap"><button id="morebtn" class="more-btn">More <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 6 8 10 12 6"/></svg></button><div id="moremenu" class="more-menu"><button data-tab="inventory">📦 Inventory</button><button data-tab="manage">🗂 Manage</button><button data-tab="settings">⚙️ Settings</button></div></div>
+</nav></header>
 <main id="view"></main>
 <footer class="bar" id="bar"><div>Total <b id="gt">₹0</b></div><button id="order" class="primary">Place Order</button></footer>
 <dialog id="dlg"><form id="pf" method="dialog">
@@ -24,7 +26,7 @@
 <p id="err" class="np"></p>
 <div class="acts"><button type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save</button></div>
 </form></dialog>
-<dialog id="od"><h3>Payment received by</h3><p id="odt"></p><div class="od-grid"><button class="primary" data-act="pay" data-m="cash" data-print="1">🖨 Cash + Print</button><button class="primary" data-act="pay" data-m="online" data-print="1">🖨 Online + Print</button><button data-act="pay" data-m="cash">Cash only</button><button data-act="pay" data-m="online">Online only</button></div><button id="ocancel" style="margin-top:10px;width:100%">Cancel</button></dialog>
+<dialog id="od"><h3 id="odt-title">Payment received by</h3><p id="odt"></p><div class="od-grid"><div class="od-row"><button class="primary" data-act="pay" data-m="cash" data-print="1">🖨 Cash + Print</button><button class="primary" data-act="pay" data-m="online" data-print="1">🖨 Online + Print</button></div><button data-act="pay" data-m="pending">⏳ Pending</button></div><button id="ocancel" style="margin-top:10px;width:100%">Cancel</button></dialog>
 <dialog id="matdlg"><form id="mf-form">
 <h3 id="mf-title">Add Material</h3>
 <label>Name *<input id="mf-name" required maxlength="80" placeholder="e.g. Mozzarella"></label>

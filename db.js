@@ -1,11 +1,11 @@
-// IndexedDB persistence: product catalogue + placed orders + raw materials. Data survives closing the app.
+// IndexedDB persistence: product catalogue + placed orders + raw materials + daily backups.
 let dbp;
 const open = () => dbp ??= new Promise((res, rej) => {
-  const r = indexedDB.open('revcafe', 3);
+  const r = indexedDB.open('revcafe', 4);  // bumped to 4 to add backups store
   r.onupgradeneeded = () => {
-    for (const s of ['products', 'orders', 'materials'])
+    for (const s of ['products', 'orders', 'materials', 'backups'])
       if (!r.result.objectStoreNames.contains(s))
-        r.result.createObjectStore(s, { keyPath: 'id', autoIncrement: true });
+        r.result.createObjectStore(s, { keyPath: 'id', autoIncrement: s !== 'backups' });
   };
   r.onsuccess = () => res(r.result);
   r.onerror = () => rej(r.error);
@@ -31,3 +31,7 @@ export const getMaterials = () => tx('materials', 'readonly', s => s.getAll());
 export const saveMaterial = m => tx('materials', 'readwrite', s => s.put(m));
 export const removeMaterial = id => tx('materials', 'readwrite', s => s.delete(id));
 export const replaceAllMaterials = list => tx('materials', 'readwrite', s => { s.clear(); list.forEach(m => s.put(m)); });
+// Daily backups — keyed by date string 'YYYY-MM-DD'
+export const saveBackup = b => tx('backups', 'readwrite', s => s.put(b));
+export const getBackup = id => tx('backups', 'readonly', s => s.get(id));
+export const getAllBackups = () => tx('backups', 'readonly', s => s.getAll());
